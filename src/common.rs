@@ -2516,6 +2516,7 @@ pub fn rustdesk_interval(i: Interval) -> ThrottledInterval {
 }
 
 pub fn load_custom_client() {
+    apply_winorder_defaults();
     #[cfg(debug_assertions)]
     if let Ok(data) = std::fs::read_to_string("./custom.txt") {
         read_custom_client(data.trim());
@@ -2535,6 +2536,19 @@ pub fn load_custom_client() {
         };
         read_custom_client(&data.trim());
     }
+}
+
+// Compile-time opt-in (WINORDER_BRANDING=1): German UI and accept-by-click without password.
+fn apply_winorder_defaults() {
+    if option_env!("WINORDER_BRANDING").is_none() {
+        return;
+    }
+    config::DEFAULT_LOCAL_SETTINGS
+        .write()
+        .unwrap()
+        .insert(keys::OPTION_LANGUAGE.to_owned(), "de".to_owned());
+    let mut settings = config::DEFAULT_SETTINGS.write().unwrap();
+    settings.insert(keys::OPTION_APPROVE_MODE.to_owned(), "click".to_owned());
 }
 
 fn read_custom_client_advanced_settings(
