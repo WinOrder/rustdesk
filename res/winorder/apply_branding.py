@@ -53,3 +53,13 @@ replace_once(
     r'VALUE "ProductName", "RustDesk"',
     f'VALUE "ProductName", "{APP_NAME}"',
 )
+replace_once(
+    "flutter/lib/desktop/widgets/tabbar_widget.dart",
+    r'child: const Text\(\s*"RustDesk",',
+    "child: Text(\n                              bind.mainGetAppNameSync(),",
+)
+replace_once(
+    "flutter/lib/desktop/pages/desktop_tab_page.dart",
+    r"body: DesktopTab\(\s*controller: tabController,",
+    "body: DesktopTab(\n              showTitle: true,\n              controller: tabController,",
+)
